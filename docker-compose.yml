@@ -1,0 +1,57 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: your_database_name
+      POSTGRES_USER: your_username
+      POSTGRES_PASSWORD: your_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  airflow:
+    image: apache/airflow:latest
+    container_name: airflow
+    restart: always
+    environment:
+      - LOAD_EX=n
+      - EXECUTOR=Local
+    volumes:
+      - ./airflow/dags:/usr/local/airflow/dags
+      - ./airflow/plugins:/usr/local/airflow/plugins
+      - ./airflow/airflow.cfg:/usr/local/airflow/airflow.cfg
+
+  dbt:
+    image: dbt:latest
+    container_name: dbt
+    restart: always
+    command: ["tail", "-f", "/dev/null"]
+    volumes:
+      - ./dbt:/dbt
+
+  redash:
+    image: redash/redash:latest
+    container_name: redash
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - "5000:5000"
+    environment:
+      REDASH_LOG_LEVEL: "INFO"
+      REDASH_REDIS_URL: "redis://redis:6379/0"
+      REDASH_DATABASE_URL: "postgresql://your_username:your_password@postgres:5432/your_database_name"
+
+  redis:
+    image: redis:latest
+    container_name: redis
+    restart: always
+    volumes:
+      - redis_data:/data
+
+volumes:
+  postgres_data:
+  redis_data:
