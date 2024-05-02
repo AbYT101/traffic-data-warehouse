@@ -42,7 +42,7 @@ def load_data_to_postgres(**kwargs):
     db_config = DBConfig.load()
 
     # Build the connection string using config values
-    connection_string = f"postgresql+psycopg2://airflow:airflow@host.docker.internal:8585/postgres"
+    connection_string = f"postgresql+psycopg2://airflow:airflow@localhost:5432/airflow"
 
     conn = psycopg2.connect(connection_string)
 
