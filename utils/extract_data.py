@@ -1,30 +1,20 @@
 import pandas as pd
+from logger import Logger
 import sys
 from datetime import datetime
-import csv
-
-import sys
-import os
-
-# Get the parent directory of the current script
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.dirname(current_dir)
-
-# Add the parent directory to the system path
-sys.path.insert(0, parent_dir)
-
 
 class DataExtractor():
     
     def __init__(self)->None:
         try:
-            print('Data extractor object Initialized')
+            self.logger=Logger().get_app_logger()
+            self.logger.info('Data extractor object Initialized')
         except:
             pass
     
     def get_columns_and_rows(self,file_path)->tuple:
         try:
-            with open(f'./data_files/{file_path}','r') as f:
+            with open(f'../data/{file_path}','r') as f:
                 lines=f.readlines()
 
             columns=lines[0].replace('\n','').split(';')
@@ -33,7 +23,7 @@ class DataExtractor():
         except Exception as e:
             # the try excepts here are for the airflow
             try:
-                print("Failed to read data")
+                self.logger.error(f"Failed to read data: {e}")
             except:
                 pass
             sys.exit(1)
@@ -67,7 +57,7 @@ class DataExtractor():
                 except Exception as e:
                     # the try excepts here are for the airflow
                     try:
-                        print("Failed preparing data for pandas at row")
+                        self.logger.error(f"Failed preparing data for pands at row {row}: {e}")
                     except:
                         pass
             
@@ -75,7 +65,7 @@ class DataExtractor():
         except Exception as e:
             # the try excepts here are for the airflow
             try:
-                print("Failed to prepare data for pandas")
+                self.logger.error(f"Failed to prepare data for pandas: {e}")
             except:
                 pass
     
@@ -93,7 +83,7 @@ class DataExtractor():
         except Exception as e:
             # the try excepts here are for the airflow
             try:
-                print("Failed to prepare data frame")
+                self.logger.error(f"Failed to prepare data frame: {e}")
             except:
                 pass
 
@@ -118,34 +108,8 @@ class DataExtractor():
         except Exception as e:
             print(e)
             try:
-                print("Failed to extract data")
+                self.logger.error(f"Failed to extract data: {e}")
             except:
                 pass
     def separate_data(self,file_name:str,chunk_size:int = 100):
         pass
-
-
-def read_csv_from_project(filename):
-    # Get the absolute path of the parent directory
-    parent_directory = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    
-    # Construct the path to the CSV file in the parent directory
-    csv_file_path = os.path.join(parent_directory, filename)
-    
-    # Check if the file exists
-    if not os.path.isfile(csv_file_path):
-        raise FileNotFoundError(f"File '{filename}' not found in the parent directory.")        
-    
-    return csv_file_path
-
-filename = 'data/traffic-data.csv'
-csv_data = read_csv_from_project(filename)
-print(csv_data)
-
-exractor = DataExtractor()
-loaded_df_name =exractor.extract_data(csv_data)
-
-print(loaded_df_name)
-trajectory_file_name,vehicle_file_name=loaded_df_name
-
-trajectory_file_name.head()

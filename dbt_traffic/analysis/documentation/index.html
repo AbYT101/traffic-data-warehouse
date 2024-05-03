@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>dbt Documentation</title>
+  </head>
+  <body>
+    <header>
+      <h1>dbt Documentation</h1>
+    </header>
+    <nav>
+      <ul>
+        <li><a href="#raw_data">Raw Data Model</a></li>
+        <li><a href="#cleaned_data">Cleaned Data Model</a></li>
+      </ul>
+    </nav>
+    <main>
+      <section id="raw_data">
+        <h2>Raw Data Model</h2>
+        <p>
+          Description: This model represents the raw data imported from the
+          pNEUMA dataset.
+        </p>
+        <p>SQL Code:</p>
+        <pre><code>SELECT *
+FROM source_pNEUMA_data;</code></pre>
+      </section>
+      <section id="cleaned_data">
+        <h2>Cleaned Data Model</h2>
+        <p>
+          Description: This model performs data cleaning and preprocessing on
+          the raw data.
+        </p>
+        <p>SQL Code:</p>
+        <pre><code>WITH cleaned_data AS (
+    SELECT
+        track_id,
+        vehicle_type,
+        distance_traveled_meters,
+        average_speed_kmh,
+        time,
+        latitude,
+        longitude,
+        speed_kmh / 3.6 AS speed_ms,
+        longitudinal_acceleration,
+        lateral_acceleration
+    FROM raw_data
+    WHERE -- Add filtering conditions if necessary
+)
+SELECT *
+FROM cleaned_data;</code></pre>
+      </section>
+    </main>
+    <footer>
+    </footer>
+  </body>
+</html>

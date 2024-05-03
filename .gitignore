@@ -1,6 +1,6 @@
 #data files
 extract/data_files/
-
+data/
 # Airflow logs
 airflow/logs/
 

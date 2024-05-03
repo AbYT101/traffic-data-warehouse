@@ -1,0 +1,12 @@
+traffic_db_profile:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: localhost  
+      port: 5432       
+      user: airflow     
+      pass: airflow     
+      dbname: airflow     
+      schema: raw
+      threads: 1       
