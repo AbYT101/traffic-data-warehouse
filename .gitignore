@@ -1,8 +1,13 @@
 #data files
 extract/data_files/
-data/
+
 # Airflow logs
 airflow/logs/
+
+# DBT
+dbt_traffic/dbt_packages
+dbt_traffic/logs/
+dbt_traffic/target/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
