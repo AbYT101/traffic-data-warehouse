@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-# from airflow import DAG
-# from airflow.operators.python import PythonOperator
+from airflow import DAG
+from airflow.operators.python import PythonOperator
 import sys
 import os
 
@@ -22,16 +22,15 @@ from utils.db_utils import DatabaseManager
 from extract.extract import extract_data_from_csv
 
 
-
 # Connection profile
-database_name = "airflow"
+database_name = "postgres"
 vehicle_table_name = "vehicle"
 vehicle_path_table_name = "vehicle_path"
 csv_file_path = "extract/data-files/traffic-data.csv"
 
 
 # Define the connection string
-connection_string = 'postgresql+psycopg2://airflow:airflow@localhost:5432/airflow'
+connection_string = 'postgresql+psycopg2://postgres:postgres@localhost:5432/postgres'
 
 # Create an instance of DatabaseManager
 db_manager = DatabaseManager(connection_string)
@@ -41,6 +40,12 @@ def create_database():
         db_manager.create_database()
     except Exception as e:
         print(f"An error occurred while creating the database: {e}")
+
+def create_tables():
+    try:
+        db_manager.create_tables()
+    except Exception as e:
+        print(f"An error occurred while creating the tables: {e}")
 
 def load_data_into_database():
     try:
@@ -53,40 +58,44 @@ def load_data_into_database():
     except Exception as e:
         print(f"An error occurred: {e}")
 
-create_database()
-load_data_into_database()
-
-# default_args = {
-#     'owner': 'Abraham Teka',
-#     'depends_on_past': False,
-#     'start_date': datetime(2024, 5, 1),
-#     'email_on_failure': False,
-#     'email_on_retry': False,
-#     'retries': 1,
-#     'retry_delay': timedelta(minutes=5),
-# }
+default_args = {
+    'owner': 'Abraham Teka',
+    'depends_on_past': False,
+    'start_date': datetime(2024, 5, 1),
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
 
 
-# dag = DAG(
-#     'create_db_and_load_data_multiple_tables_dag',
-#     default_args=default_args,
-#     description='A DAG to create a database and load data from CSV into multiple tables',
-#     schedule_interval=timedelta(days=1),
-# )
+dag = DAG(
+    'create_db_and_load_data_multiple_tables_dag',
+    default_args=default_args,
+    description='A DAG to create a database and load data from CSV into multiple tables',
+    schedule_interval=timedelta(days=1),
+)
 
 
-# create_db_task = PythonOperator(
-#     task_id='create_database',
-#     python_callable=create_database,
-#     dag=dag,
-# )
+create_db_task = PythonOperator(
+    task_id='create_database',
+    python_callable=create_database,
+    dag=dag,
+)
 
 
-# load_data_task = PythonOperator(
-#     task_id='load_data_into_database',
-#     python_callable=load_data_into_database,
-#     dag=dag,
-# )
+create_tables_task = PythonOperator(
+    task_id='create_tables',
+    python_callable=create_tables,
+    dag=dag,
+)
 
 
-# create_db_task >> load_data_task
+load_data_task = PythonOperator(
+    task_id='load_data_into_database',
+    python_callable=load_data_into_database,
+    dag=dag,
+)
+
+
+create_db_task >> create_tables_task >> load_data_task
