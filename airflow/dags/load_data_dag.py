@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
-# from airflow import DAG
-# from airflow.operators.python import PythonOperator
+from airflow import DAG
+from airflow.operators.python import PythonOperator
 import sys
 import os
 
@@ -58,48 +58,44 @@ def load_data_into_database():
     except Exception as e:
         print(f"An error occurred: {e}")
 
-create_database()
-create_tables()
-load_data_into_database()
-
-# default_args = {
-#     'owner': 'Abraham Teka',
-#     'depends_on_past': False,
-#     'start_date': datetime(2024, 5, 1),
-#     'email_on_failure': False,
-#     'email_on_retry': False,
-#     'retries': 1,
-#     'retry_delay': timedelta(minutes=5),
-# }
+default_args = {
+    'owner': 'Abraham Teka',
+    'depends_on_past': False,
+    'start_date': datetime(2024, 5, 1),
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+    'retry_delay': timedelta(minutes=5),
+}
 
 
-# dag = DAG(
-#     'create_db_and_load_data_multiple_tables_dag',
-#     default_args=default_args,
-#     description='A DAG to create a database and load data from CSV into multiple tables',
-#     schedule_interval=timedelta(days=1),
-# )
+dag = DAG(
+    'create_db_and_load_data_multiple_tables_dag',
+    default_args=default_args,
+    description='A DAG to create a database and load data from CSV into multiple tables',
+    schedule_interval=timedelta(days=1),
+)
 
 
-# create_db_task = PythonOperator(
-#     task_id='create_database',
-#     python_callable=create_database,
-#     dag=dag,
-# )
+create_db_task = PythonOperator(
+    task_id='create_database',
+    python_callable=create_database,
+    dag=dag,
+)
 
 
-# create_tables_task = PythonOperator(
-#     task_id='create_tables',
-#     python_callable=create_tables,
-#     dag=dag,
-# )
+create_tables_task = PythonOperator(
+    task_id='create_tables',
+    python_callable=create_tables,
+    dag=dag,
+)
 
 
-# load_data_task = PythonOperator(
-#     task_id='load_data_into_database',
-#     python_callable=load_data_into_database,
-#     dag=dag,
-# )
+load_data_task = PythonOperator(
+    task_id='load_data_into_database',
+    python_callable=load_data_into_database,
+    dag=dag,
+)
 
 
-# create_db_task >> load_data_task
+create_db_task >> create_tables_task >> load_data_task
