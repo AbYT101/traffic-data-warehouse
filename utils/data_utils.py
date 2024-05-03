@@ -20,7 +20,6 @@ def read_csv_from_project(filename):
     
     # Construct the path to the CSV file in the parent directory
     csv_file_path = os.path.join(parent_directory, filename)
-    
     # Check if the file exists
     if not os.path.isfile(csv_file_path):
         raise FileNotFoundError(f"File '{filename}' not found in the parent directory.")        
@@ -87,15 +86,3 @@ def load_vehicle_path_data(csv_file):
     except Exception as e:
         print(f"Error loading vehicle path data from CSV: {e}")
     return vehicle_path_data
-
-
-
-filename = 'data/traffic-data.csv'
-csv_data = read_csv_from_project(filename)
-print(csv_data)
-
-vehicle_data = load_vehicle_data(csv_data)
-vehicle_path_data = load_vehicle_path_data(csv_data)
-
-print(vehicle_data)
-print(vehicle_path_data)
