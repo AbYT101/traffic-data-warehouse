@@ -16,4 +16,4 @@ SELECT
     max_speed,
     min_speed
 FROM
-    speed_stats;
+    speed_stats

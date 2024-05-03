@@ -13,4 +13,4 @@ SELECT
     track_id,
     total_time
 FROM
-    journey_time;
+    journey_time

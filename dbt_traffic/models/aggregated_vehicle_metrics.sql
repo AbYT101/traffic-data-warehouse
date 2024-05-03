@@ -7,7 +7,7 @@ WITH vehicle_metrics AS (
         AVG(vp.speed) AS avg_speed,
         MAX(vp.speed) AS max_speed,
         MIN(vp.speed) AS min_speed,
-        MAX(vp.traveled_d) AS max_distance_traveled
+        MAX(v.traveled_d) AS max_distance_traveled
     FROM
         vehicle v
     LEFT JOIN
@@ -26,4 +26,4 @@ SELECT
     min_speed,
     max_distance_traveled
 FROM
-    vehicle_metrics;
+    vehicle_metrics
