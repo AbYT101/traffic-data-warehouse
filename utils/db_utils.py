@@ -13,16 +13,24 @@ class DatabaseManager:
             self.engine.execute(f'CREATE DATABASE IF NOT EXISTS {database_name}')
             print(f"Database '{database_name}' created successfully.")
         except Exception as e:
-           print(f"Error creating database: {e}")
+            print(f"Error creating database: {e}")
 
-    def insert_data(self, table_type, data):      
+    def create_tables(self):
+        try:
+            # Create all tables if they don't exist
+            Base.metadata.create_all(self.engine)
+            print("Tables created successfully.")
+        except Exception as e:
+            print(f"Error creating tables: {e}")
+
+    def insert_data(self, table_type, data):
         session = None
-        try:           
+        try:
             session = self.Session()
 
             # Bulk insert data
             session.bulk_insert_mappings(table_type, data)
-            
+
             session.commit()
             print("Data inserted successfully.")
         except Exception as e:
