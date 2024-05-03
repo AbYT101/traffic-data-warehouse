@@ -17,7 +17,7 @@ from utils.data_utils import read_csv_from_project, load_vehicle_data, load_vehi
 
 
 
-def extract_data_from_csv(filename = 'data/traffic-data.csv'):
+def extract_data_from_csv(filename = 'extract/data_files/traffic-data.csv'):
     csv_data = read_csv_from_project(filename)
     print(csv_data)
 
