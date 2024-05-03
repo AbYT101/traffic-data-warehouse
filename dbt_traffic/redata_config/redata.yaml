@@ -1,0 +1,38 @@
+actions:
+  # Vehicle path data quality check
+  - name: vehicle_path_data_quality_check
+    description: Perform data quality check on the vehicle_path table
+    type: sql
+    schedule: "0 0 * * *" 
+    query: |
+      SELECT
+          CASE
+              WHEN COUNT(*) > 0 THEN 'Failed: There are NULL values in lat or lon columns.'
+              ELSE 'Passed: No NULL values found in lat or lon columns.'
+          END AS result
+      FROM
+          vehicle_path
+      WHERE
+          lat IS NULL OR lon IS NULL;
+    tags:
+      - data_quality
+      - vehicle_path
+
+  # Vehicle data quality check
+  - name: vehicles_data_quality_check
+    description: Perform data quality check on the vehicles table
+    type: sql
+    schedule: "0 0 * * *"  
+    query: |
+      SELECT
+          CASE
+              WHEN COUNT(*) > 0 THEN 'Failed: There are NULL values in type column.'
+              ELSE 'Passed: No NULL values found in type column.'
+          END AS result
+      FROM
+          vehicle
+      WHERE
+          type IS NULL;
+    tags:
+      - data_quality
+      - vehicles
