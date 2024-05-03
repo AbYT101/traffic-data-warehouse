@@ -23,14 +23,14 @@ from extract.extract import extract_data_from_csv
 
 
 # Connection profile
-database_name = "airflow"
+database_name = "postgres"
 vehicle_table_name = "vehicle"
 vehicle_path_table_name = "vehicle_path"
 csv_file_path = "extract/data-files/traffic-data.csv"
 
 
 # Define the connection string
-connection_string = 'postgresql+psycopg2://airflow:airflow@localhost:5432/airflow'
+connection_string = 'postgresql+psycopg2://postgres:postgres@localhost:5432/postgres'
 
 # Create an instance of DatabaseManager
 db_manager = DatabaseManager(connection_string)
@@ -40,6 +40,12 @@ def create_database():
         db_manager.create_database()
     except Exception as e:
         print(f"An error occurred while creating the database: {e}")
+
+def create_tables():
+    try:
+        db_manager.create_tables()
+    except Exception as e:
+        print(f"An error occurred while creating the tables: {e}")
 
 def load_data_into_database():
     try:
@@ -53,6 +59,7 @@ def load_data_into_database():
         print(f"An error occurred: {e}")
 
 create_database()
+create_tables()
 load_data_into_database()
 
 # default_args = {
@@ -77,6 +84,13 @@ load_data_into_database()
 # create_db_task = PythonOperator(
 #     task_id='create_database',
 #     python_callable=create_database,
+#     dag=dag,
+# )
+
+
+# create_tables_task = PythonOperator(
+#     task_id='create_tables',
+#     python_callable=create_tables,
 #     dag=dag,
 # )
 
