@@ -22,7 +22,6 @@ from utils.db_utils import DatabaseManager
 from extract.extract import extract_data_from_csv
 
 
-
 # Connection profile
 database_name = "airflow"
 vehicle_table_name = "vehicle"

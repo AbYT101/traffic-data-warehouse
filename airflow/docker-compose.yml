@@ -77,9 +77,6 @@ x-airflow-common:
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
-    - /c/10x/traffic-data-warehouse:/c/10x/traffic-data-warehouse
-    - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-    - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow/dags
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -110,11 +107,6 @@ services:
     image: redis:latest
     expose:
       - 6379
-    volumes:
-      - /c/10x/traffic-data-warehouse:/c/10x/traffic-data-warehouse
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow/dags
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s
@@ -128,10 +120,6 @@ services:
     command: webserver
     ports:
       - "8080:8080"
-    volumes:
-      - /c/10x/traffic-data-warehouse:/c/10x/traffic-data-warehouse
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow/dags
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
@@ -147,10 +135,6 @@ services:
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
-    volumes:
-      - /c/10x/traffic-data-warehouse:/c/10x/traffic-data-warehouse
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow/dags
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
       interval: 30s
@@ -166,10 +150,6 @@ services:
   airflow-worker:
     <<: *airflow-common
     command: celery worker
-    volumes:
-      - /c/10x/traffic-data-warehouse:/c/10x/traffic-data-warehouse
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow/dags
     healthcheck:
       # yamllint disable rule:line-length
       test:
@@ -262,10 +242,6 @@ services:
         chown -R "${AIRFLOW_UID}:0" /sources/{logs,dags,plugins}
         exec /entrypoint airflow version
     # yamllint enable rule:line-length
-    volumes:
-      - /c/10x/traffic-data-warehouse:/c/10x/traffic-data-warehouse
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow/dags
     environment:
       <<: *airflow-common-env
       _AIRFLOW_DB_MIGRATE: 'true'
@@ -287,10 +263,6 @@ services:
       - bash
       - -c
       - airflow
-    volumes:
-      - /c/10x/traffic-data-warehouse:/c/10x/traffic-data-warehouse
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow/dags
 
   # You can enable flower by adding "--profile flower" option e.g. docker-compose --profile flower up
   # or by explicitly targeted on the command line e.g. docker-compose up flower.
@@ -313,10 +285,3 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
-    volumes:
-      - /c/10x/traffic-data-warehouse:/c/10x/traffic-data-warehouse
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow/dags
-
-volumes:
-  postgres-db-volume:
