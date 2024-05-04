@@ -173,10 +173,6 @@ services:
   airflow-triggerer:
     <<: *airflow-common
     command: triggerer
-    volumes:
-      - /c/10x/traffic-data-warehouse:/c/10x/traffic-data-warehouse
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow
-      - /c/10x/traffic-data-warehouse/airflow:/c/10x/traffic-data-warehouse/airflow/dags
     healthcheck:
       test: ["CMD-SHELL", 'airflow jobs check --job-type TriggererJob --hostname "$${HOSTNAME}"']
       interval: 30s

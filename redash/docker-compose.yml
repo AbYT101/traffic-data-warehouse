@@ -1,0 +1,33 @@
+version: '3'
+
+services:
+  server:
+    image: redash/redash:latest
+    depends_on:
+      - postgres
+      - redis
+    ports:
+      - "5000:5000"
+    environment:
+      REDASH_LOG_LEVEL: "INFO"
+      REDASH_REDIS_URL: "redis://redis:6379/0"
+      REDASH_DATABASE_URL: "postgresql://postgres@postgres/postgres"
+      REDASH_COOKIE_SECRET: "my_secret_key"
+      REDASH_SECRET_KEY: "my_secret_key"
+    restart: always
+
+  postgres:
+    image: postgres:9.5.6
+    volumes:
+      - /var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "password"
+    restart: always
+
+  redis:
+    image: redis:5.0-alpine
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - /var/lib/redis/data
+    restart: always
