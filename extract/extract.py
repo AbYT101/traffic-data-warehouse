@@ -26,3 +26,6 @@ def extract_data_from_csv(filename = 'extract/data_files/traffic-data.csv'):
 
     return vehicle_data, vehicle_path_data
 
+
+vehicle_data, vehicle_path_data = extract_data_from_csv()
+print(vehicle_data)
